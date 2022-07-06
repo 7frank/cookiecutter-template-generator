@@ -59,22 +59,42 @@ const generator: CookieGenerator = {
 
 log(chalk.green("Let's a go!"));
 
-const root = path.resolve(generator.source);
+const sourceRoot = path.resolve(generator.source);
+const targetRoot = path.resolve(generator.target);
 
 Object.entries(generator.configuration).map(([key, config]) => {
   Object.entries(config.include ?? []).map(([key, p]) => {
-    const pathPattern = path.resolve(root, p);
+    const pathPattern = path.resolve(sourceRoot, p);
 
     log({ pathPattern });
 
-    // options is optional
     glob(pathPattern, {}, function (e, files) {
-      // files is an array of filenames.
-      // If the `nonull` option is set, and nothing
-      // was found, then files is ["**/*.js"]
-      // er is an error object or null.
       log({ files, e });
-      fs.copyFileSync;
+
+      files.map((sourceFileName) => {
+        const targetPath = path.resolve(targetRoot, generator.target);
+
+        const sourceFileAndPathWithoutRoot = sourceFileName.replace(
+          sourceRoot,
+          ""
+        );
+
+        const targetFileName = path.resolve(
+          targetPath,
+          sourceFileAndPathWithoutRoot
+        );
+
+        log("copying files", {
+          sourceRoot,
+          targetRoot,
+          sourceFileName,
+          targetPath,
+          sourceFileAndPathWithoutRoot,
+          targetFileName,
+        });
+
+        //fs.copyFileSync(sourceFileName, targetFileName);
+      });
     });
   });
 });
