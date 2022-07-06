@@ -1,0 +1,8 @@
+{
+  "name": "cookiecutter-template-generator",
+  "version": "1.0.0",
+  "description": "A meta generator for [cookiecutter](https://github.com/cookiecutter/cookiecutter)",
+  "main": "index.js",
+  "repository": "https://github.com/7frank/cookiecutter-template-generator.git",
+  "license": "MIT"
+}
