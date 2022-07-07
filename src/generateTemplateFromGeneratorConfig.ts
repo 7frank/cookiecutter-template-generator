@@ -43,10 +43,12 @@ export function generateTemplateFromGeneratorConfig(
             sourceFileAndPathWithoutRoot
           );
 
-          const templatedTargetFileName = config.replaceInPath?.reduce(
-            (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
-            targetFileName
-          );
+          const templatedTargetFileName = config.replaceInPath
+            ? config.replaceInPath.reduce(
+                (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+                targetFileName
+              )
+            : targetFileName;
 
           log("copying files", {
             sourceFileName,
@@ -54,18 +56,23 @@ export function generateTemplateFromGeneratorConfig(
             templatedTargetFileName,
           });
 
-          const data = fs.readFileSync(sourceFileName);
+          const fileContent = fs.readFileSync(sourceFileName).toString();
 
-          const templatedData = config.replaceInFile?.reduce(
-            (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
-            data.toString()
-          );
+          const templatedData = config.replaceInFile
+            ? config.replaceInFile.reduce(
+                (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+                fileContent
+              )
+            : fileContent;
 
           const keys = extractTemplateKeys(config);
 
           cookieCutterKeysPerConfig[configurationName] = keys;
 
-          //fs.copyFileSync(sourceFileName, targetFileName);
+          fs.mkdirSync(path.dirname(templatedTargetFileName), {
+            recursive: true,
+          });
+          fs.writeFileSync(templatedTargetFileName, templatedData, {});
         });
     });
   });
@@ -91,8 +98,6 @@ function extractTemplateKeys(config: Config): string[] {
   const fileKeys = config.replaceInFile?.map((curr) =>
     getHandlebarVariables(curr.trg)
   );
-
-  const x = pathKeys?.flatMap(Object.keys);
 
   const keys = [
     ...(anyKeys?.flatMap(Object.keys) ?? []),
