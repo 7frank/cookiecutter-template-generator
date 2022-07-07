@@ -15,25 +15,25 @@ const generator: CookieGenerator = {
       replaceInPath: [
         {
           src: "CaseFileQueryAuthorizationService",
-          trg: "{{service-name}}AuthorizationService",
+          trg: "{{cookiecutter.service_name}}AuthorizationService",
         },
       ],
       replaceInFile: [
         {
           src: "CaseFileQueryAuthorizationService",
-          trg: "{{service-name}}AuthorizationService",
+          trg: "{{cookiecutter.service_name}}AuthorizationService",
         },
         {
           src: "CaseFileQueryAuthorizationCheck",
-          trg: "{{check-name}}AuthorizationCheck",
+          trg: "{{cookiecutter.check_name}}AuthorizationCheck",
         },
         {
           src: "No permission to query case file.",
-          trg: "{{default-service-error}}",
+          trg: "{{cookiecutter.default_service_error}}",
         },
         {
           src: "checkCaseFileQueryEntitlement",
-          trg: "{{check-method-name}}",
+          trg: "{{cookiecutter.check_method_name}}",
         },
       ],
     },

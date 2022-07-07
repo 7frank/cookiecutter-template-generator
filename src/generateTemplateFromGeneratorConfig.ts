@@ -1,9 +1,9 @@
 import glob from "glob";
 import fs from "fs";
 import path from "path";
-import { getHandlebarVariables } from "./getHandlebarVariables";
 import { log } from "../cookie.generator";
-import { Config, CookieGenerator } from "./types";
+import { CookieGenerator } from "./types";
+import { extractTemplateKeys, validateKeys, onlyUnique } from "./validateKeys";
 
 /**
  * MVP outline - work in progress
@@ -67,6 +67,8 @@ export function generateTemplateFromGeneratorConfig(
 
           const keys = extractTemplateKeys(config);
 
+          validateKeys(keys);
+
           cookieCutterKeysPerConfig[configurationName] = keys;
 
           fs.mkdirSync(path.dirname(templatedTargetFileName), {
@@ -83,6 +85,8 @@ export function generateTemplateFromGeneratorConfig(
     .flat()
     .filter(onlyUnique)
     .reduce((acc, curr) => {
+      curr = (curr as string).replace("cookiecutter.", "");
+
       (acc as any)[curr as string] = "";
       return acc;
     }, {});
@@ -98,36 +102,4 @@ export function generateTemplateFromGeneratorConfig(
     JSON.stringify(cookieCutterVariables, null, "  "),
     {}
   );
-}
-
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
-/**
- * extract variable names from handlebars like: {{variable-name}}
- */
-
-function extractTemplateKeys(config: Config): string[] {
-  const anyKeys = config.replace?.map((curr) =>
-    getHandlebarVariables(curr.trg)
-  );
-
-  const pathKeys = config.replaceInPath?.map((curr) =>
-    getHandlebarVariables(curr.trg)
-  );
-
-  const fileKeys = config.replaceInFile?.map((curr) =>
-    getHandlebarVariables(curr.trg)
-  );
-
-  const keys = [
-    ...(anyKeys?.flatMap(Object.keys) ?? []),
-    ...(pathKeys?.flatMap(Object.keys) ?? []),
-    ...(fileKeys?.flatMap(Object.keys) ?? []),
-  ];
-
-  var uniqueKeys = keys.filter(onlyUnique);
-
-  return uniqueKeys;
 }
