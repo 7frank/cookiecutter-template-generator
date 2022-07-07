@@ -25,5 +25,10 @@ export interface CookieGenerator {
    */
   target: string;
 
+  /**
+   * a string containing a handlebar  e.g. {{cookiecutter.repository_name}} which is required by cookiecutter to generate code from a template
+   */
+  repository: string;
+
   configuration: ConfigurationRecord;
 }

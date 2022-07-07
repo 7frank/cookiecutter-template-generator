@@ -40,6 +40,7 @@ export function generateTemplateFromGeneratorConfig(
 
           const targetFileName = path.resolve(
             targetRoot,
+            generator.repository,
             sourceFileAndPathWithoutRoot
           );
 
@@ -65,7 +66,7 @@ export function generateTemplateFromGeneratorConfig(
               )
             : fileContent;
 
-          const keys = extractTemplateKeys(config);
+          const keys = extractTemplateKeys(config, [generator.repository]);
 
           validateKeys(keys);
 

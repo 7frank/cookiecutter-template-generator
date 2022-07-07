@@ -7,6 +7,7 @@ export const log = debug("c-t-g");
 
 const generator: CookieGenerator = {
   source: "../authority-tooling",
+  repository: "{{cookiecutter.repository_name}}",
   target: "./out",
   configuration: {
     main: {

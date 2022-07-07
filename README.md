@@ -2,7 +2,19 @@
 
 A meta generator for [cookiecutter](https://github.com/cookiecutter/cookiecutter)
 
-- initial goal: have a bare MVP working that takes a configuration file, which will create a cookiecutter template from existing source (or project), which again can be used with cookiecutter to create a new project.
+- This project currently provides a bare MVP working that takes a configuration file, which will create a cookiecutter template from existing source (or project), which again can be used with cookiecutter to create a new project.
+
+TLDR:
+
+This Project -> create a Config for Existing Code -> generate Cookiecutter Template from existing Code-> Run CookieCutter and generate more Code
+
+# how to
+
+Disclaimer: currently this is only a rough outline and will not work out of the box
+
+- create a cookiecutter template from the configuration provided inside of cookie.generator.ts `export DEBUG=* && esrun cookie.generator.ts`
+- this will generate files in the ./out folder
+- now run `cookiecutter ./out/` which will ask you for some variables and create files & folders that from the previously generated cookiecutter template
 
 # development
 
@@ -12,5 +24,6 @@ A meta generator for [cookiecutter](https://github.com/cookiecutter/cookiecutter
 
 # TODO
 
-- (1) MVP
-- (2) create cli with cmd-ts & zod
+- (1) ☑ <strike>MVP</strike>
+- (2) create cli with cmd-ts & zod that takes a config.ts or json file instead of the currently hard coded version
+- (3) write tests that also function as bare examples

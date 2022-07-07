@@ -30,7 +30,14 @@ export function onlyUnique(value, index, self) {
 /**
  * extract variable names from handlebars like: {{variable-name}}
  */
-export function extractTemplateKeys(config: Config): string[] {
+export function extractTemplateKeys(
+  config: Config,
+  otherPotentialKeys?: string[]
+): string[] {
+  const otherKeys = otherPotentialKeys?.map((curr) =>
+    getHandlebarVariables(curr)
+  );
+
   const anyKeys = config.replace?.map((curr) =>
     getHandlebarVariables(curr.trg)
   );
@@ -44,6 +51,7 @@ export function extractTemplateKeys(config: Config): string[] {
   );
 
   const keys = [
+    ...(otherKeys?.flatMap(Object.keys) ?? []),
     ...(anyKeys?.flatMap(Object.keys) ?? []),
     ...(pathKeys?.flatMap(Object.keys) ?? []),
     ...(fileKeys?.flatMap(Object.keys) ?? []),
