@@ -76,6 +76,8 @@ function generateTemplateFromGeneratorConfig(generator: CookieGenerator) {
   const sourceRoot = path.resolve(generator.source);
   const targetRoot = path.resolve(generator.target);
 
+  const cookieCutterJson = {};
+
   Object.entries(generator.configuration).map(([key, config]) => {
     Object.entries(config.include ?? []).map(([key, p]) => {
       const pathPattern = path.resolve(sourceRoot, p);
@@ -96,9 +98,26 @@ function generateTemplateFromGeneratorConfig(generator: CookieGenerator) {
             sourceFileAndPathWithoutRoot
           );
 
+          const templatedTargetFileName = config.replaceInPath?.reduce(
+            (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+            targetFileName
+          );
+
           log("copying files", {
             sourceFileName,
             targetFileName,
+            templatedTargetFileName,
+          });
+
+          const data = fs.readFileSync(sourceFileName);
+
+          const templatedData = config.replaceInFile?.reduce(
+            (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+            data.toString()
+          );
+
+          log("templated", {
+            templatedData,
           });
 
           //fs.copyFileSync(sourceFileName, targetFileName);
