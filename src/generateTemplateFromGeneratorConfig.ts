@@ -77,9 +77,31 @@ export function generateTemplateFromGeneratorConfig(
     });
   });
 
+  const configFileName = path.resolve(targetRoot, "cookiecutter.json");
+
+  const cookieCutterVariables = Object.values(cookieCutterKeysPerConfig)
+    .flat()
+    .filter(onlyUnique)
+    .reduce((acc, curr) => {
+      (acc as any)[curr as string] = "";
+      return acc;
+    }, {});
+
   log("following keys are available in cookiecutter.json", {
+    configFileName,
     cookieCutterKeysPerConfig,
+    cookieCutterVariables,
   });
+
+  fs.writeFileSync(
+    configFileName,
+    JSON.stringify(cookieCutterVariables, null, "  "),
+    {}
+  );
+}
+
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
 }
 
 /**
@@ -104,10 +126,6 @@ function extractTemplateKeys(config: Config): string[] {
     ...(pathKeys?.flatMap(Object.keys) ?? []),
     ...(fileKeys?.flatMap(Object.keys) ?? []),
   ];
-
-  function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
 
   var uniqueKeys = keys.filter(onlyUnique);
 
