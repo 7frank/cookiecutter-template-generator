@@ -45,9 +45,14 @@ const generator: CookieGenerator = {
   configuration: {
     main: {
       include: ["**/*CaseFileQueryAuthorizationService*"],
-      exclude: [".git"],
-
-      replace: [
+      exclude: [".git", "**/app/build/**"],
+      replaceInPath: [
+        {
+          src: "CaseFileQueryAuthorizationService",
+          trg: "{{service-name}}AuthorizationService",
+        },
+      ],
+      replaceInFile: [
         {
           src: "CaseFileQueryAuthorizationService",
           trg: "{{service-name}}AuthorizationService",
@@ -57,44 +62,51 @@ const generator: CookieGenerator = {
   },
 };
 
-log(chalk.green("Let's a go!"));
+/**
+ * MVP outline - work in progress
+ *
+ * - traverse file system (find & exclude files)
+ * - replace in path
+ * - replace in file
+ * - copy result
+ * - create cookiecutter.json with template parameters
+ */
 
-const sourceRoot = path.resolve(generator.source);
-const targetRoot = path.resolve(generator.target);
+function generateTemplateFromGeneratorConfig(generator: CookieGenerator) {
+  const sourceRoot = path.resolve(generator.source);
+  const targetRoot = path.resolve(generator.target);
 
-Object.entries(generator.configuration).map(([key, config]) => {
-  Object.entries(config.include ?? []).map(([key, p]) => {
-    const pathPattern = path.resolve(sourceRoot, p);
+  Object.entries(generator.configuration).map(([key, config]) => {
+    Object.entries(config.include ?? []).map(([key, p]) => {
+      const pathPattern = path.resolve(sourceRoot, p);
 
-    log({ pathPattern });
+      log({ pathPattern });
 
-    glob(pathPattern, {}, function (e, files) {
-      log({ files, e });
+      glob(pathPattern, { ignore: config.exclude }, function (e, files) {
+        log({ files, e });
 
-      files.map((sourceFileName) => {
-        const targetPath = path.resolve(targetRoot, generator.target);
+        files.map((sourceFileName) => {
+          const sourceFileAndPathWithoutRoot = sourceFileName.replace(
+            sourceRoot,
+            "."
+          );
 
-        const sourceFileAndPathWithoutRoot = sourceFileName.replace(
-          sourceRoot,
-          ""
-        );
+          const targetFileName = path.resolve(
+            targetRoot,
+            sourceFileAndPathWithoutRoot
+          );
 
-        const targetFileName = path.resolve(
-          targetPath,
-          sourceFileAndPathWithoutRoot
-        );
+          log("copying files", {
+            sourceFileName,
+            targetFileName,
+          });
 
-        log("copying files", {
-          sourceRoot,
-          targetRoot,
-          sourceFileName,
-          targetPath,
-          sourceFileAndPathWithoutRoot,
-          targetFileName,
+          //fs.copyFileSync(sourceFileName, targetFileName);
         });
-
-        //fs.copyFileSync(sourceFileName, targetFileName);
       });
     });
   });
-});
+}
+
+log(chalk.green("Let's a go!"));
+generateTemplateFromGeneratorConfig(generator);
