@@ -16,6 +16,15 @@ Disclaimer: currently this is only a rough outline and will not work out of the 
 - this will generate files in the ./out folder
 - now run `cookiecutter ./out/` which will ask you for some variables and create files & folders that from the previously generated cookiecutter template
 
+```
+repository_name []: ServiceInformationInquiryCreation
+package_name []: core-component-serviceinformationinquiry-application
+service_name []: ServiceInformationInquiryCreation
+check_name []: ServiceInformationInquiryCreation
+default_service_error []: No permission to create service information inquiry.
+check_method_name []: checkServiceInformationInquiryCreationEntitlement
+```
+
 # development
 
 - install dependencies globally (esrun,yarn, etc.) then run `yarn` or `npm i`
