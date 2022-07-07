@@ -23,6 +23,18 @@ const generator: CookieGenerator = {
           src: "CaseFileQueryAuthorizationService",
           trg: "{{service-name}}AuthorizationService",
         },
+        {
+          src: "CaseFileQueryAuthorizationCheck",
+          trg: "{{check-name}}AuthorizationCheck",
+        },
+        {
+          src: "No permission to query case file.",
+          trg: "{{default-service-error}}",
+        },
+        {
+          src: "checkCaseFileQueryEntitlement",
+          trg: "{{check-method-name}}",
+        },
       ],
     },
   },
