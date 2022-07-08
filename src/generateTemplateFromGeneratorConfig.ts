@@ -53,7 +53,6 @@ export function generateTemplateFromGeneratorConfig(
 
           log("copying files", {
             sourceFileName,
-            targetFileName,
             templatedTargetFileName,
           });
 

@@ -18,8 +18,20 @@ const generator: CookieGenerator = {
           src: "CaseFileQueryAuthorizationService",
           trg: "{{cookiecutter.service_name}}AuthorizationService",
         },
+        {
+          src: "core-component-casefile-application",
+          trg: "{{cookiecutter.module_dirname}}",
+        },
+        {
+          src: "core/component/casefile/application",
+          trg: "{{cookiecutter.module_path}}",
+        },
       ],
       replaceInFile: [
+        {
+          src: "package com.daimler.mats.core.component.casefile.application.authorization;",
+          trg: "package com.daimler.mats.{{cookiecutter.package_name}}.authorization;",
+        },
         {
           src: "CaseFileQueryAuthorizationService",
           trg: "{{cookiecutter.service_name}}AuthorizationService",
