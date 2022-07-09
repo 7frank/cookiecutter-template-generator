@@ -15,8 +15,7 @@
     "zod": "^3.17.3"
   },
   "devDependencies": {
-    "@types/node": "^18.0.3",
-    "ts-to-zod": "^1.11.0"
+    "@types/node": "^18.0.3"
   },
   "scripts": {
     "format": "prettier '**/*' --write --ignore-unknown"
