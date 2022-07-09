@@ -43,14 +43,16 @@ const generator: CookieGenerator = {
         {
           src: "CaseFileQueryAuthorizationCheck",
           trg: "{{cookiecutter.check_name}}AuthorizationCheck",
-        },
-        {
-          src: "No permission to query case file.",
-          trg: "{{cookiecutter.default_service_error}}",
+          default:
+            "{{cookiecutter.service_name.replace('AuthorizationService','')}}",
         },
         {
           src: "checkCaseFileQueryEntitlement",
           trg: "{{cookiecutter.check_method_name}}",
+        },
+        {
+          src: "No permission to query case file.",
+          trg: "{{cookiecutter.default_service_error}}",
         },
       ],
     },
