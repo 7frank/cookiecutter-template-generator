@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const replaceSchema = z.object({
-  src: z.string(),
-  trg: z.string(),
+  src: z.string().min(1),
+  trg: z.string().min(1),
   default: z.string().optional(),
 });
 
