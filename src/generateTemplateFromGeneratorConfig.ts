@@ -1,9 +1,10 @@
 import glob from "glob";
 import fs from "fs";
 import path from "path";
-import { log } from "../cookie.generator";
+
 import { CookieGenerator, Replace, TemplateKey } from "./types";
 import { extractTemplateKeysAndDefaults, validateKeys } from "./validateKeys";
+import { log } from "./log";
 
 /**
  * MVP outline - work in progress
