@@ -29,10 +29,11 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 
 - install dependencies globally (esrun,yarn, etc.) then run `yarn` or `npm i`
 
-- run `export DEBUG=* && esrun cookie.generator.ts -c ./examples/auth-service.ts `
+- run `export DEBUG=* && esrun cookie.generator.ts -c ./examples/auth-service.ts ` or `export DEBUG=* && ./cookie.generator.ts -c ./examples/auth-service.ts `
 
 # TODO
 
 - (1) ☑ <strike>MVP</strike>
-- (2) create cli with cmd-ts & zod that takes a config.ts or json file instead of the currently hard coded version
+- (2) ☑ <strike>create cli with cmd-ts & zod that takes a config.ts or json file instead of the currently hard coded version</strike>
+  - fix bug that prevents loading config files dynamically
 - (3) write tests that also function as bare examples
