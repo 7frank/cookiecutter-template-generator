@@ -1,5 +1,5 @@
 import { getHandlebarVariables } from "./getHandlebarVariables";
-import { Config } from "./types";
+import { Config, Replace, TemplateKey } from "./types";
 import chalk from "chalk";
 
 export function validateKeys(keys: string[]) {
@@ -24,40 +24,40 @@ export function validateKeys(keys: string[]) {
     }
   });
 }
-export function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
+
 /**
  * extract variable names from handlebars like: {{variable-name}}
  */
-export function extractTemplateKeys(
+export function extractTemplateKeysAndDefaults(
   config: Config,
-  otherPotentialKeys?: string[]
-): string[] {
-  const otherKeys = otherPotentialKeys?.map((curr) =>
-    getHandlebarVariables(curr)
+  otherPotentialKeys?: Replace[]
+): Record<TemplateKey, Replace> {
+  const otherKeys = otherPotentialKeys?.reduce(
+    (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
+    {}
   );
 
-  const anyKeys = config.replace?.map((curr) =>
-    getHandlebarVariables(curr.trg)
+  const anyKeys = config.replace?.reduce(
+    (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
+    {}
   );
 
-  const pathKeys = config.replaceInPath?.map((curr) =>
-    getHandlebarVariables(curr.trg)
+  const pathKeys = config.replaceInPath?.reduce(
+    (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
+    {}
   );
 
-  const fileKeys = config.replaceInFile?.map((curr) =>
-    getHandlebarVariables(curr.trg)
+  const fileKeys = config.replaceInFile?.reduce(
+    (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
+    {}
   );
 
-  const keys = [
-    ...(otherKeys?.flatMap(Object.keys) ?? []),
-    ...(anyKeys?.flatMap(Object.keys) ?? []),
-    ...(pathKeys?.flatMap(Object.keys) ?? []),
-    ...(fileKeys?.flatMap(Object.keys) ?? []),
-  ];
+  const keys = {
+    ...otherKeys,
+    ...anyKeys,
+    ...pathKeys,
+    ...fileKeys,
+  };
 
-  var uniqueKeys = keys.filter(onlyUnique);
-
-  return uniqueKeys;
+  return keys;
 }

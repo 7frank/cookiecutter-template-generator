@@ -1,4 +1,4 @@
-interface Replace {
+export interface Replace {
   src: string;
   trg: string;
 }
@@ -32,3 +32,5 @@ export interface CookieGenerator {
 
   configuration: ConfigurationRecord;
 }
+
+export type TemplateKey = `cookiecutter.${string}`;
