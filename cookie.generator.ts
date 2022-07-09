@@ -5,6 +5,7 @@ import { log } from "./src/log";
 import * as fs from "fs";
 
 import { command, binary, run, option, string } from "cmd-ts";
+import { cookieGeneratorSchema } from "./src/types";
 
 interface CLI {
   config: string;
@@ -30,6 +31,8 @@ async function handler({ config }: CLI) {
   // FIXME it seems that we cannot import dynamically defined strings
   // const { default: generator } = await import(config.replace(".ts", ""));
   const { default: generator } = await import("./examples/auth-service");
+
+  cookieGeneratorSchema.parse(generator);
 
   log(chalk.green("Let's a go!"));
   generateTemplateFromGeneratorConfig(generator);

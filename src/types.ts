@@ -7,8 +7,17 @@ export const replaceSchema = z.object({
 });
 
 export const configSchema = z.object({
+  /**
+   * paths of files that we want to include in the copy and replace process
+   */
   include: z.array(z.string()).optional(),
+  /**
+   * path pattern that will be excluded e.g. "**\/*.js"
+   */
   exclude: z.array(z.string()).optional(),
+  /**
+   * define variables that are used by others
+   */
   define: z.array(replaceSchema.omit({ src: true })).optional(),
   replaceInPath: z.array(replaceSchema).optional(),
   replaceInFile: z.array(replaceSchema).optional(),
@@ -17,25 +26,26 @@ export const configSchema = z.object({
 export type Replace = z.infer<typeof replaceSchema>;
 export type Config = z.infer<typeof configSchema>;
 
-type ConfigurationMap = Map<"main" | string, Config>;
+const configurationMapSchema = z.record(z.string(), configSchema);
 
-export interface CookieGenerator {
+export const cookieGeneratorSchema = z.object({
   /**
    * a path to the root of a project or root of a github repo
    */
-  source: string;
-
+  source: z.string(),
   /**
    * a path to the target where the output (the template) will be generated
    */
-  target: string;
+  target: z.string(),
 
   /**
    * a string containing a handlebar  e.g. {{cookiecutter.repository_name}} which is required by cookiecutter to generate code from a template
    */
-  repository: string;
+  repository: z.string(),
 
-  configuration: ConfigurationMap;
-}
+  configuration: configurationMapSchema,
+});
+
+export type CookieGenerator = z.infer<typeof cookieGeneratorSchema>;
 
 export type TemplateKey = `cookiecutter.${string}`;
