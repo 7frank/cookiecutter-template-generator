@@ -25,12 +25,16 @@ const generator: CookieGenerator = {
         {
           src: "core/component/casefile/application",
           trg: "{{cookiecutter.module_path}}",
+          default:
+            "{{ cookiecutter.module_dirname.lower().replace('-', '/') }}",
         },
       ],
       replaceInFile: [
         {
           src: "package com.daimler.mats.core.component.casefile.application.authorization;",
           trg: "package com.daimler.mats.{{cookiecutter.package_name}}.authorization;",
+          default:
+            "{{ cookiecutter.module_dirname.lower().replace('-', '.') }}",
         },
         {
           src: "CaseFileQueryAuthorizationService",

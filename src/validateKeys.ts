@@ -37,11 +37,6 @@ export function extractTemplateKeysAndDefaults(
     {}
   );
 
-  const anyKeys = config.replace?.reduce(
-    (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
-    {}
-  );
-
   const pathKeys = config.replaceInPath?.reduce(
     (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
     {}
@@ -54,7 +49,6 @@ export function extractTemplateKeysAndDefaults(
 
   const keys = {
     ...otherKeys,
-    ...anyKeys,
     ...pathKeys,
     ...fileKeys,
   };

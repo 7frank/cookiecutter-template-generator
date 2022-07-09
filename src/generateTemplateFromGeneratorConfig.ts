@@ -123,7 +123,7 @@ function extractCookieCutterJson(
   ).reduce((acc, [ccKey, replace]) => {
     ccKey = ccKey.replace("cookiecutter.", "");
 
-    acc[ccKey] = replace.src;
+    acc[ccKey] = replace.default ?? replace.src;
     return acc;
   }, {} as Record<string, string>);
   return cookieCutterVariables;

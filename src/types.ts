@@ -1,6 +1,7 @@
 export interface Replace {
   src: string;
   trg: string;
+  default?: string;
 }
 export interface Config {
   /**
@@ -8,7 +9,7 @@ export interface Config {
    */
   include?: string[];
   exclude?: string[];
-  replace?: Replace[];
+
   replaceInPath?: Replace[];
   replaceInFile?: Replace[];
 }
