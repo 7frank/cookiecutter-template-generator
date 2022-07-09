@@ -1,4 +1,7 @@
-import { getHandlebarVariables } from "./getHandlebarVariables";
+import {
+  getHandlebarVariables,
+  getHandlebarVariables2 as getHandlebarVariablesForDefined,
+} from "./getHandlebarVariables";
 import { Config, Replace, TemplateKey } from "./types";
 import chalk from "chalk";
 
@@ -37,6 +40,11 @@ export function extractTemplateKeysAndDefaults(
     {}
   );
 
+  const definedKeys = config.define?.reduce(
+    (acc, curr) => ({ ...acc, ...getHandlebarVariablesForDefined(curr) }),
+    {}
+  );
+
   const pathKeys = config.replaceInPath?.reduce(
     (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
     {}
@@ -51,6 +59,7 @@ export function extractTemplateKeysAndDefaults(
     ...otherKeys,
     ...pathKeys,
     ...fileKeys,
+    ...definedKeys, // add last to override potential previous definitions
   };
 
   return keys;

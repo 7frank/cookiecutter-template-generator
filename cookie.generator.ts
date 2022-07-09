@@ -13,10 +13,17 @@ const generator: CookieGenerator = {
     main: {
       include: ["**/*CaseFileQueryAuthorizationService*"],
       exclude: [".git", "**/app/build/**"],
+
+      define: [
+        {
+          trg: "{{cookiecutter.auth_z_service_prefix}}",
+          default: "CaseFileQuery",
+        },
+      ],
       replaceInPath: [
         {
           src: "CaseFileQueryAuthorizationService",
-          trg: "{{cookiecutter.service_name}}AuthorizationService",
+          trg: "{{cookiecutter.auth_z_service_prefix}}AuthorizationService",
         },
         {
           src: "core-component-casefile-application",
@@ -38,17 +45,18 @@ const generator: CookieGenerator = {
         },
         {
           src: "CaseFileQueryAuthorizationService",
-          trg: "{{cookiecutter.service_name}}AuthorizationService",
+          trg: "{{cookiecutter.service_name}}",
+          default: "{{cookiecutter.auth_z_service_prefix}}AuthorizationService",
         },
         {
           src: "CaseFileQueryAuthorizationCheck",
-          trg: "{{cookiecutter.check_name}}AuthorizationCheck",
-          default:
-            "{{cookiecutter.service_name.replace('AuthorizationService','')}}",
+          trg: "{{cookiecutter.check_name}}",
+          default: "{{cookiecutter.auth_z_service_prefix}}AuthorizationCheck",
         },
         {
           src: "checkCaseFileQueryEntitlement",
           trg: "{{cookiecutter.check_method_name}}",
+          default: "check{{cookiecutter.auth_z_service_prefix}}Entitlement",
         },
         {
           src: "No permission to query case file.",
