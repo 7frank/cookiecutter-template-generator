@@ -61,6 +61,8 @@ const generator: CookieGenerator = {
         {
           src: "No permission to query case file.",
           trg: "{{cookiecutter.default_service_error}}",
+          default:
+            "No permission to initiate {{cookiecutter.auth_z_service_prefix}}.",
         },
       ],
     },
