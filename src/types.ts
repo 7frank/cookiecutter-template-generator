@@ -1,25 +1,23 @@
-export interface Replace {
-  src: string;
-  trg: string;
-  default?: string;
-}
-export interface Config {
-  /**
-   * paths of files that we want to include in the copy and replace process
-   */
-  include?: string[];
-  /**
-   * path pattern that will be excluded e.g. "**\/*.js"
-   */
-  exclude?: string[];
-  /**
-   * define variables that are used by others
-   */
-  define?: Omit<Replace, "src">[];
-  replaceInPath?: Replace[];
-  replaceInFile?: Replace[];
-}
-type ConfigurationRecord = Record<"main" | string, Config>;
+import { z } from "zod";
+
+export const replaceSchema = z.object({
+  src: z.string(),
+  trg: z.string(),
+  default: z.string().optional(),
+});
+
+export const configSchema = z.object({
+  include: z.array(z.string()).optional(),
+  exclude: z.array(z.string()).optional(),
+  define: z.array(replaceSchema.omit({ src: true })).optional(),
+  replaceInPath: z.array(replaceSchema).optional(),
+  replaceInFile: z.array(replaceSchema).optional(),
+});
+
+export type Replace = z.infer<typeof replaceSchema>;
+export type Config = z.infer<typeof configSchema>;
+
+type ConfigurationMap = Map<"main" | string, Config>;
 
 export interface CookieGenerator {
   /**
@@ -37,7 +35,7 @@ export interface CookieGenerator {
    */
   repository: string;
 
-  configuration: ConfigurationRecord;
+  configuration: ConfigurationMap;
 }
 
 export type TemplateKey = `cookiecutter.${string}`;
