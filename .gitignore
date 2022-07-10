@@ -1,2 +1,9 @@
 node_modules/
 out
+
+# for yarn 2 plug & play
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
+out

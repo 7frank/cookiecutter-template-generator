@@ -22,5 +22,8 @@
   },
   "scripts": {
     "format": "prettier '**/*' --write --ignore-unknown"
+  },
+  "installConfig": {
+    "pnp": true
   }
 }
