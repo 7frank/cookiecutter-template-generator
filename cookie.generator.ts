@@ -3,12 +3,15 @@ import chalk from "chalk";
 import { generateTemplateFromGeneratorConfig } from "./src/generateTemplateFromGeneratorConfig";
 import { log } from "./src/log";
 
-import { command, binary, run, positional } from "cmd-ts";
+import { command, binary, run, positional, option, optional } from "cmd-ts";
 import { cookieGeneratorSchema, CookieGenerator } from "./src/types";
 import { JSONType } from "./src/input/JsonType";
+import { ReadStream } from "fs";
+import { TarGzType } from "./src/input/TarGzType";
 
 interface CLI {
   config: JSON;
+  input: ReadStream;
 }
 
 const args: Record<keyof CLI, any> = {
@@ -16,9 +19,16 @@ const args: Record<keyof CLI, any> = {
     type: JSONType,
     description: "a typescript file that exports a 'Generator' configuration",
   }),
+  input: option({
+    type: optional(TarGzType),
+    long: "input",
+    short: "i",
+    description:
+      "a tar gz file or url to such a file which will override the 'source' property of the configuration",
+  }),
 };
 
-async function handler({ config }: CLI) {
+async function handler({ config, input }: CLI) {
   let generator: CookieGenerator;
   try {
     generator = cookieGeneratorSchema.parse(config);
