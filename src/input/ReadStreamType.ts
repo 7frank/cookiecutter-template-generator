@@ -19,7 +19,7 @@ function stdin() {
 /**
  * This "type" for cmd-ts wraps local files, http and pipe into one handy ReadStream
  *
- * Note: load stuff from the internet might become ahead scraptch, but cookiecutter does it so why shouldn't we *cough*
+ * Note: load stuff from the internet might become a head scratch, but cookiecutter does it so why shouldn't we *cough*
  */
 export const ReadStreamType: Type<string, Stream> = {
   description: "A file path or a URL to make a GET request to",
@@ -63,19 +63,3 @@ export function readStreamToString(s: Stream): Promise<string> {
     s.on("end", () => resolve(str));
   });
 }
-
-export const CommaSeparatedString: Type<string, string[]> = {
-  description: "comma seperated string",
-  async from(s) {
-    return s.split(/, ?/);
-  },
-};
-
-export const JSONType = extendType(ReadStreamType, {
-  async from(inputStream) {
-    const t = await readStreamToString(inputStream);
-
-    return JSON.parse(t);
-  },
-  //defaultValue: () => ["Hello"],
-});

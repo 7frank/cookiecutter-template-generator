@@ -52,3 +52,4 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
   - fix bug that prevents loading config files dynamically
 - (3) write tests that also function as bare examples
 - (4) add some asciinema example that showcases a minimal example
+- (5) add option to override generator input (node-fetch & gunzip-maybe & tar-stream)

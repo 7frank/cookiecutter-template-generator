@@ -5,7 +5,7 @@ import { log } from "./src/log";
 
 import { command, binary, run, positional } from "cmd-ts";
 import { cookieGeneratorSchema, CookieGenerator } from "./src/types";
-import { JSONType } from "./src/ReadStreamType";
+import { JSONType } from "./src/input/JsonType";
 
 interface CLI {
   config: JSON;
