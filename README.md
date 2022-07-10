@@ -12,14 +12,20 @@ This Project -> create a Config for Existing Code -> generate Cookiecutter Templ
 
 - install esrun `npm i -g @digitak/esrun`
 - install dependencies then run `yarn` or `npm i`
+- (optional) run `npm link` to install the `ctg` cli on your system
 
 # how to
 
 Disclaimer: currently this is only a rough outline and will not work out of the box
 
 - follow the installation section
-- create a cookiecutter template from the configuration provided inside of cookie.generator.ts `export DEBUG=* && ctg -c ./examples/auth-service.ts `
-- this will generate files in the ./out folder
+- create a cookiecutter template
+
+  - you may choose any file format or language you want here. The Result must be JSON that conforms to the CookieGenerator Schema
+  - an example config exists at `./examples/auth-service.ts`
+  - run the example like the following: `esrun ./examples/auth-service.ts | ctg -` which will first compile the example and output a JSON string that again is piped to the ctg cli
+
+- following the steps above will generate files in the ./out folder (which are are a valid cookiecutter template)
 - now run `cookiecutter ./out/` which will ask you for some variables and create files & folders that from the previously generated cookiecutter template
 
 ```
@@ -33,11 +39,11 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 
 # development
 
-- run `export DEBUG=* && ctg -c ./examples/auth-service.ts `
+- run `esrun ./examples/auth-service.ts | ctg -`
 
   or
 
-- `export DEBUG=* && ctg -c ./examples/auth-service.ts `
+- `esrun ./examples/auth-service.ts | esrun ./cookie.generator.ts`
 
 # TODO
 
@@ -45,3 +51,4 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 - (2) ☑ <strike>create cli with cmd-ts & zod that takes a config.ts or json file instead of the currently hard coded version</strike>
   - fix bug that prevents loading config files dynamically
 - (3) write tests that also function as bare examples
+- (4) add some asciinema example that showcases a minimal example
