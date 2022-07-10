@@ -39,7 +39,9 @@ async function handler({ config }: CLI) {
 }
 
 const cli = command({
-  name: "cli",
+  name: "cookiecutter template generator",
+  description:
+    "A meta generator for https://github.com/cookiecutter/cookiecutter",
   args,
   handler: handler as any,
 });

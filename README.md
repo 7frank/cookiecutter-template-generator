@@ -8,11 +8,17 @@ TLDR:
 
 This Project -> create a Config for Existing Code -> generate Cookiecutter Template from existing Code-> Run CookieCutter and generate more Code
 
+# installation
+
+- install esrun `npm i -g @digitak/esrun`
+- install dependencies then run `yarn` or `npm i`
+
 # how to
 
 Disclaimer: currently this is only a rough outline and will not work out of the box
 
-- create a cookiecutter template from the configuration provided inside of cookie.generator.ts `export DEBUG=* && esrun cookie.generator.ts -c ./examples/auth-service.ts `
+- follow the installation section
+- create a cookiecutter template from the configuration provided inside of cookie.generator.ts `export DEBUG=* && ctg -c ./examples/auth-service.ts `
 - this will generate files in the ./out folder
 - now run `cookiecutter ./out/` which will ask you for some variables and create files & folders that from the previously generated cookiecutter template
 
@@ -27,9 +33,11 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 
 # development
 
-- install dependencies globally (esrun,yarn, etc.) then run `yarn` or `npm i`
+- run `export DEBUG=* && ctg -c ./examples/auth-service.ts `
 
-- run `export DEBUG=* && esrun cookie.generator.ts -c ./examples/auth-service.ts ` or `export DEBUG=* && ./cookie.generator.ts -c ./examples/auth-service.ts `
+  or
+
+- `export DEBUG=* && ctg -c ./examples/auth-service.ts `
 
 # TODO
 
