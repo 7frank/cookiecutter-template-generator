@@ -10,7 +10,7 @@ export const configSchema = z.object({
   /**
    * paths of files that we want to include in the copy and replace process
    */
-  include: z.array(z.string()).optional(),
+  include: z.array(z.string()),
   /**
    * path pattern that will be excluded e.g. "**\/*.js"
    */

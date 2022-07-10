@@ -64,4 +64,4 @@ const generator: CookieGenerator = {
   },
 };
 
-export default generator;
+console.log(JSON.stringify(generator, null, "  "));
