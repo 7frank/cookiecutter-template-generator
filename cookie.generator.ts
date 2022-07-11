@@ -45,19 +45,9 @@ const args: Record<keyof CLI, any> = {
 };
 
 async function handler({ config, input, pattern }: CLI) {
-  // TODO do something with the input stream
-  input?.pipe(process.stdout).on("error", (err) => {
-    console.error(err);
-  });
-
   let generator: CookieGenerator;
   try {
     generator = cookieGeneratorSchema.parse(config);
-
-    if (pattern) {
-      listPossibleFiles(generator);
-      process.exit(0);
-    }
   } catch (e) {
     console.log(chalk.red("The provided generator configuration is invalid:"));
     console.log(
@@ -70,6 +60,17 @@ async function handler({ config, input, pattern }: CLI) {
 
     process.exit(-1);
   }
+
+  if (pattern) {
+    listPossibleFiles(pattern, generator);
+    process.exit(0);
+  }
+
+  // TODO do something with the input stream
+  input?.pipe(process.stdout).on("error", (err) => {
+    console.error(err);
+  });
+
   log(chalk.green("Let's a go!"));
   generateTemplateFromGeneratorConfig(generator);
 }

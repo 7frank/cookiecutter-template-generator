@@ -11,11 +11,11 @@ const identifiers = createPossibleIdentifiers([
   "inquiry",
 ]);
 
-//console.log(identifiers);
-
-// todo define variables via https://cookiecutter.readthedocs.io/en/stable/advanced/private_variables.html?highlight=lower
-//  define  "__rendered": "{{ cookiecutter.project_name|lower }}"
-//  _not_rendered
+/**
+ * TODO instead try to define variables via https://cookiecutter.readthedocs.io/en/stable/advanced/private_variables.html?highlight=lower
+ *  define  "__rendered": "{{ cookiecutter.project_name|lower }}"
+ * _not_rendered
+ */
 
 const generator: CookieGenerator = {
   source: "../authority-tooling",
@@ -23,7 +23,7 @@ const generator: CookieGenerator = {
   target: "./out2",
   configuration: {
     main: {
-      include: ["**/ui-api-rest-core-component-vehiclepositioninquiry**"],
+      include: ["**/ui-api-rest-core-component-vehiclepositioninquiry/**"],
       exclude: [".git", "**/build/libs/**"],
       replaceInPath: [],
       replaceInFile: [],
