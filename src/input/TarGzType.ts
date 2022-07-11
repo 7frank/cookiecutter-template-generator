@@ -1,9 +1,8 @@
 import { extendType } from "cmd-ts";
 import { ReadStreamType } from "./ReadStreamType";
-
 import gunzip from "gunzip-maybe";
-
 import tar from "tar-stream";
+import stream from "stream";
 
 export const GzType = extendType(ReadStreamType, {
   async from(inputStream) {
