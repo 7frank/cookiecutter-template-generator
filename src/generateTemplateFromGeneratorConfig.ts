@@ -2,9 +2,13 @@ import glob from "glob";
 import fs from "fs";
 import path from "path";
 
-import { CookieGenerator, Replace, TemplateKey } from "./types";
+import { Config, CookieGenerator, Replace, TemplateKey } from "./types";
 import { extractTemplateKeysAndDefaults, validateKeys } from "./validateKeys";
 import { log } from "./log";
+
+export function fileIterator(pathPattern: string, config: Config) {
+  return glob.sync(pathPattern, { ignore: config.exclude, nodir: true });
+}
 
 /**
  * MVP outline - work in progress
@@ -32,56 +36,54 @@ export function generateTemplateFromGeneratorConfig(
 
       log({ pathPattern });
 
-      glob
-        .sync(pathPattern, { ignore: config.exclude })
-        .map(function (sourceFileName) {
-          log({ sourceFileName });
+      fileIterator(pathPattern, config).map(function (sourceFileName) {
+        log({ sourceFileName });
 
-          const sourceFileAndPathWithoutRoot = sourceFileName.replace(
-            sourceRoot,
-            "."
-          );
+        const sourceFileAndPathWithoutRoot = sourceFileName.replace(
+          sourceRoot,
+          "."
+        );
 
-          const targetFileName = path.resolve(
-            targetRoot,
-            generator.repository,
-            sourceFileAndPathWithoutRoot
-          );
+        const targetFileName = path.resolve(
+          targetRoot,
+          generator.repository,
+          sourceFileAndPathWithoutRoot
+        );
 
-          const templatedTargetFileName = config.replaceInPath
-            ? config.replaceInPath.reduce(
-                (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
-                targetFileName
-              )
-            : targetFileName;
+        const templatedTargetFileName = config.replaceInPath
+          ? config.replaceInPath.reduce(
+              (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+              targetFileName
+            )
+          : targetFileName;
 
-          log("copying files", {
-            sourceFileName,
-            templatedTargetFileName,
-          });
-
-          const fileContent = fs.readFileSync(sourceFileName).toString();
-
-          const templatedData = config.replaceInFile
-            ? config.replaceInFile.reduce(
-                (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
-                fileContent
-              )
-            : fileContent;
-
-          const keysAndValues = extractTemplateKeysAndDefaults(config, [
-            { src: "MyRepository", trg: generator.repository },
-          ]);
-
-          validateKeys(Object.keys(keysAndValues));
-
-          cookieCutterKeysPerConfig[configurationName] = keysAndValues;
-
-          fs.mkdirSync(path.dirname(templatedTargetFileName), {
-            recursive: true,
-          });
-          fs.writeFileSync(templatedTargetFileName, templatedData, {});
+        log("copying files", {
+          sourceFileName,
+          templatedTargetFileName,
         });
+
+        const fileContent = fs.readFileSync(sourceFileName).toString();
+
+        const templatedData = config.replaceInFile
+          ? config.replaceInFile.reduce(
+              (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+              fileContent
+            )
+          : fileContent;
+
+        const keysAndValues = extractTemplateKeysAndDefaults(config, [
+          { src: "MyRepository", trg: generator.repository },
+        ]);
+
+        validateKeys(Object.keys(keysAndValues));
+
+        cookieCutterKeysPerConfig[configurationName] = keysAndValues;
+
+        fs.mkdirSync(path.dirname(templatedTargetFileName), {
+          recursive: true,
+        });
+        fs.writeFileSync(templatedTargetFileName, templatedData, {});
+      });
     });
   });
 

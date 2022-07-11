@@ -3,15 +3,25 @@ import chalk from "chalk";
 import { generateTemplateFromGeneratorConfig } from "./src/generateTemplateFromGeneratorConfig";
 import { log } from "./src/log";
 
-import { command, binary, run, positional, option, optional } from "cmd-ts";
+import {
+  command,
+  binary,
+  run,
+  positional,
+  option,
+  optional,
+  string,
+} from "cmd-ts";
 import { cookieGeneratorSchema, CookieGenerator } from "./src/types";
 import { JSONType } from "./src/input/JsonType";
 import { ReadStream } from "fs";
 import { TarGzType } from "./src/input/TarGzType";
+import { listPossibleFiles } from "./src/listPossibleFiles";
 
 interface CLI {
   config: JSON;
-  input: ReadStream;
+  input?: ReadStream;
+  pattern?: string;
 }
 
 const args: Record<keyof CLI, any> = {
@@ -26,9 +36,15 @@ const args: Record<keyof CLI, any> = {
     description:
       "a tar gz file or url to such a file which will override the 'source' property of the configuration",
   }),
+  pattern: option({
+    type: optional(string),
+    long: "pattern",
+    short: "p",
+    description: "applies this pattern and lists all files that match",
+  }),
 };
 
-async function handler({ config, input }: Partial<CLI>) {
+async function handler({ config, input, pattern }: CLI) {
   // TODO do something with the input stream
   input?.pipe(process.stdout).on("error", (err) => {
     console.error(err);
@@ -37,6 +53,11 @@ async function handler({ config, input }: Partial<CLI>) {
   let generator: CookieGenerator;
   try {
     generator = cookieGeneratorSchema.parse(config);
+
+    if (pattern) {
+      listPossibleFiles(generator);
+      process.exit(0);
+    }
   } catch (e) {
     console.log(chalk.red("The provided generator configuration is invalid:"));
     console.log(

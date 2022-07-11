@@ -1,7 +1,21 @@
 import { CookieGenerator } from "../src/types";
 import { createPossibleIdentifiersf as createPossibleIdentifiers } from "../src/utils/permutator";
 
-console.log(createPossibleIdentifiers(["vehicle", "position", "inquiry"]));
+/**
+ * Note: atm this template does not create a cookiecutter template but instead skips the templating part by driectly replacing occurences
+ */
+
+const identifiers = createPossibleIdentifiers([
+  "vehicle",
+  "position",
+  "inquiry",
+]);
+
+//console.log(identifiers);
+
+// todo define variables via https://cookiecutter.readthedocs.io/en/stable/advanced/private_variables.html?highlight=lower
+//  define  "__rendered": "{{ cookiecutter.project_name|lower }}"
+//  _not_rendered
 
 const generator: CookieGenerator = {
   source: "../authority-tooling",
@@ -9,15 +23,8 @@ const generator: CookieGenerator = {
   target: "./out2",
   configuration: {
     main: {
-      include: ["**/*CaseFileQueryAuthorizationService*"],
-      exclude: [".git", "**/app/build/**"],
-
-      define: [
-        {
-          trg: "{{cookiecutter.auth_z_service_prefix}}",
-          default: "CaseFileQuery",
-        },
-      ],
+      include: ["**/ui-api-rest-core-component-vehiclepositioninquiry**"],
+      exclude: [".git", "**/build/libs/**"],
       replaceInPath: [],
       replaceInFile: [],
     },
