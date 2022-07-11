@@ -4,6 +4,7 @@ import gunzip from "gunzip-maybe";
 import tar from "tar-stream";
 import stream from "stream";
 import { log } from "../log";
+import Rx from "rxjs";
 
 export const GzType = extendType(ReadStreamType, {
   async from(inputStream) {
@@ -12,22 +13,12 @@ export const GzType = extendType(ReadStreamType, {
 });
 
 /**
- * Take the tar gz and convert it into an object stream that contains name& content
- *
- * TODO try to make this les ugly using https://www.npmjs.com/package/mississippi2
- *  or rxjs-stream / highland
+ * Take the tar gz and convert it into a rxjs subject
  */
 
 export const TarGzType = extendType(GzType, {
   async from(tarStream) {
-    const pass = new stream.PassThrough({
-      // setting value of objectMode
-      objectMode: true,
-
-      write: function (chunk, encoding, next) {
-        next();
-      },
-    });
+    var eventStream = new Rx.Subject();
 
     // header is the tar header
     // stream is the content body (might be an empty stream)
@@ -40,8 +31,8 @@ export const TarGzType = extendType(GzType, {
 
         stream.on("end", function () {
           const content = Buffer.concat(chunks).toString("utf8");
-          //  console.log({ name: header.name, content });
-          pass.write({ name: header.name, content });
+
+          eventStream.next({ name: header.name, content });
 
           next(); // ready for next entry
         });
@@ -54,10 +45,11 @@ export const TarGzType = extendType(GzType, {
     });
 
     extract.on("finish", function () {
+      eventStream.complete();
       log("finished extracting TarGzType");
     });
 
     tarStream.pipe(extract);
-    return pass;
+    return eventStream;
   },
 });
