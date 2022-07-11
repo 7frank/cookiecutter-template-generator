@@ -28,9 +28,11 @@ const args: Record<keyof CLI, any> = {
   }),
 };
 
-async function handler({ config, input }: CLI) {
+async function handler({ config, input }: Partial<CLI>) {
   // TODO do something with the input stream
-  input.pipe(process.stdout);
+  input?.pipe(process.stdout).on("error", (err) => {
+    console.error(err);
+  });
 
   let generator: CookieGenerator;
   try {

@@ -15,6 +15,7 @@ export const GzType = extendType(ReadStreamType, {
  * Take the tar gz and convert it into an object stream that contains name& content
  *
  * TODO try to make this les ugly using https://www.npmjs.com/package/mississippi2
+ *  or rxjs-stream / highland
  */
 
 export const TarGzType = extendType(GzType, {

@@ -48,8 +48,8 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 # TODO
 
 - (1) ☑ <strike>MVP</strike>
-- (2) ☑ <strike>create cli with cmd-ts & zod that takes a config.ts or json file instead of the currently hard coded version</strike>
-  - fix bug that prevents loading config files dynamically
-- (3) write tests that also function as bare examples
-- (4) add some asciinema example that showcases a minimal example
-- (5) add option to override generator input (node-fetch & gunzip-maybe & tar-stream)
+- (2) ☑ <strike>create cli takes a config.ts or json file as input</strike>
+- (3) add option to override generator input (node-fetch & gunzip-maybe & tar-stream & rxjs-stream)
+  - e.g. `esrun ./examples/auth-service.ts | ctg - -i https://github.com/Baeldung/kotlin-tutorials/tarball/master`
+- (4) write tests that also function as bare examples
+- (5) add some asciinema example that showcases a minimal example
