@@ -1,3 +1,5 @@
+import { Define, Replace } from "../../src/types";
+
 function permutator<T>(inputArr: T[]): T[][] {
   let result: T[][] = [];
 
@@ -35,6 +37,7 @@ const separatorFunctions = [
 ];
 const separators = ["", " ", ".", "-", "_"];
 const permOps = permuteOps(separators, separatorFunctions);
+
 /**
  * Will create a list of a lot of possible word capialization and separator combinations
  * e.g.
@@ -50,10 +53,51 @@ const permOps = permuteOps(separators, separatorFunctions);
  * ]
  * ```
  */
-export function createPossibleIdentifiersf(words: string[]) {
+export function createPossibleIdentifiers(words: string[]) {
   const wordPermutations = permutator(words);
 
   return permOps.flatMap(({ separator, fn }) =>
     wordPermutations.map((words) => words.map(fn).join(separator))
   );
+}
+
+export function createPossibleIdentifiersPlaceholders(words: string[]): {
+  define: Define[];
+  replace: Replace[];
+} {
+  const define = words.map((w, k) => ({
+    word: w,
+    templateKey: `_word${k}`,
+  }));
+
+  const define_f = words.map((w, k) => ({
+    word: k == 0 ? w : capitalizeFirstLetter(w),
+    templateKey: `__word${k}_f`,
+  }));
+
+  const define_u = words.map((w, k) => ({
+    word: w.toUpperCase(),
+    templateKey: `_word${k}_u`,
+  }));
+
+  const define_c = words.map((w, k) => ({
+    word: capitalizeFirstLetter(w),
+    templateKey: `_word${k}_c`,
+  }));
+
+  return {
+    define: [define, define_f, define_u, define_c]
+      .flat()
+      .map((d) => ({ trg: d.templateKey, default: d.word })),
+    replace: [define, define_f, define_u, define_c].flatMap(getCombinations),
+  };
+}
+
+function getCombinations(define: { word: string; templateKey: string }[]) {
+  return separators.flatMap((separator) => ({
+    src: define.map(({ word }) => word).join(separator),
+    trg: define
+      .map(({ templateKey }) => `{{cookiecutter.${templateKey}}}`)
+      .join(separator),
+  }));
 }

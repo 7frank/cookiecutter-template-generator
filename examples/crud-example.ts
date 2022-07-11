@@ -1,11 +1,14 @@
 import { CookieGenerator } from "../src/types";
-import { createPossibleIdentifiersf as createPossibleIdentifiers } from "../src/utils/permutator";
+import {
+  createPossibleIdentifiers,
+  createPossibleIdentifiersPlaceholders,
+} from "./utils/permutator";
 
 /**
  * Note: atm this template does not create a cookiecutter template but instead skips the templating part by driectly replacing occurences
  */
 
-const identifiers = createPossibleIdentifiers([
+const identifiers = createPossibleIdentifiersPlaceholders([
   "vehicle",
   "position",
   "inquiry",
@@ -25,8 +28,9 @@ const generator: CookieGenerator = {
     main: {
       include: ["**/ui-api-rest-core-component-vehiclepositioninquiry/**"],
       exclude: [".git", "**/build/libs/**"],
-      replaceInPath: [],
-      replaceInFile: [],
+      define: identifiers.define,
+      replaceInPath: [...identifiers.replace],
+      replaceInFile: [...identifiers.replace],
     },
   },
 };

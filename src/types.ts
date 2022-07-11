@@ -6,6 +6,8 @@ export const replaceSchema = z.object({
   default: z.string().optional(),
 });
 
+const defineSchema = replaceSchema.omit({ src: true });
+
 export const configSchema = z.object({
   /**
    * paths of files that we want to include in the copy and replace process
@@ -18,12 +20,14 @@ export const configSchema = z.object({
   /**
    * define variables that are used by others
    */
-  define: z.array(replaceSchema.omit({ src: true })).optional(),
+  define: z.array(defineSchema).optional(),
   replaceInPath: z.array(replaceSchema).optional(),
   replaceInFile: z.array(replaceSchema).optional(),
 });
 
 export type Replace = z.infer<typeof replaceSchema>;
+export type Define = z.infer<typeof defineSchema>;
+
 export type Config = z.infer<typeof configSchema>;
 
 const configurationMapSchema = z.record(z.string(), configSchema);
