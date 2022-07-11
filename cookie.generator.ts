@@ -29,6 +29,9 @@ const args: Record<keyof CLI, any> = {
 };
 
 async function handler({ config, input }: CLI) {
+  // TODO do something with the input stream
+  input.pipe(process.stdout);
+
   let generator: CookieGenerator;
   try {
     generator = cookieGeneratorSchema.parse(config);
