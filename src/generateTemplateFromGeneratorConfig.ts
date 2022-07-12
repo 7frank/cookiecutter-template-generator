@@ -41,7 +41,7 @@ export function fileSubject$(
 type CookieCutterKeysPerConfig = Record<string, CookieCuttersType>;
 
 /**
- * MVP outline - work in progress
+ *  outline:
  *
  * - traverse file system (find & exclude files)
  * - replace in path
@@ -53,24 +53,6 @@ export async function generateTemplateFromGeneratorConfig(
   generator: CookieGenerator,
   { input }: { input?: FileDescriptorSubject }
 ) {
-  // TODO do something with the input stream
-  // if (input) {
-  //   var observer: Partial<Rx.Observer<FileDescriptor>> = {
-  //     next: function (next) {
-  //       console.log(next);
-  //     },
-  //     error: function (error) {
-  //       console.log(error);
-  //     },
-
-  //     complete: function () {
-  //       console.log("done");
-  //     },
-  //   };
-
-  //   input.subscribe(observer);
-  // }
-
   const cookieCutterKeysPerConfig: CookieCutterKeysPerConfig = {};
 
   for await (const [configurationName, config] of Object.entries(
@@ -81,7 +63,8 @@ export async function generateTemplateFromGeneratorConfig(
 
       log({ pathPattern });
 
-      const subject$ = fileSubject$(pathPattern, config);
+      // FIXME when input is used it will only provide data for the first configuration
+      const subject$ = input ?? fileSubject$(pathPattern, config);
 
       subject$.subscribe((value) => {
         const handler = handleSingleConfiguration(config, generator);

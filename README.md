@@ -51,5 +51,6 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 - (2) ☑ <strike>create cli takes a config.ts or json file as input</strike>
 - (3) add option to override generator input
   - e.g. `esrun ./examples/auth-service.ts | ctg - -i https://github.com/Baeldung/kotlin-tutorials/tarball/master`
+  - TODO extract the source of files iterated over from generateTemplateFromGeneratorConfig
 - (4) write tests that also function as bare examples
 - (5) add some asciinema example that showcases a minimal example
