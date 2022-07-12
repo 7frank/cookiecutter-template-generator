@@ -23,7 +23,7 @@ const identifiers = createPossibleIdentifiersPlaceholders([
 const generator: CookieGenerator = {
   source: "../authority-tooling",
   repository: "{{cookiecutter.repository_name}}",
-  target: "./out2",
+  target: "./out/crud-example-template",
   configuration: {
     main: {
       include: ["**/ui-api-rest-core-component-vehiclepositioninquiry/**"],

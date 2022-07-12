@@ -25,8 +25,8 @@ Disclaimer: currently this is only a rough outline and will not work out of the 
   - an example config exists at `./examples/auth-service.ts`
   - run the example like the following: `esrun ./examples/auth-service.ts | ctg -` which will first compile the example and output a JSON string that again is piped to the ctg cli
 
-- following the steps above will generate files in the ./out folder (which are are a valid cookiecutter template)
-- now run `cookiecutter ./out/` which will ask you for some variables and create files & folders that from the previously generated cookiecutter template
+- following the steps above will generate files in the `./out/auth-service-template` folder (which are are a valid cookiecutter template)
+- now run `cookiecutter ./out/auth-service-template` which will ask you for some variables and create files & folders that from the previously generated cookiecutter template
 
 ```
 repository_name []: ServiceInformationInquiryCreation

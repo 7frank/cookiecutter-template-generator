@@ -3,7 +3,7 @@ import { CookieGenerator } from "../src/types";
 const generator: CookieGenerator = {
   source: "../authority-tooling",
   repository: "{{cookiecutter.repository_name}}",
-  target: "./out",
+  target: "./out/auth-service-template",
   configuration: {
     main: {
       include: ["**/*CaseFileQueryAuthorizationService*"],
