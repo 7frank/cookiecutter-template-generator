@@ -14,8 +14,24 @@ import {
 import { extractTemplateKeysAndDefaults, validateKeys } from "./validateKeys";
 import { log } from "./log";
 
-export function fileIterator(pathPattern: string, config: Config) {
-  return glob.sync(pathPattern, { ignore: config.exclude, nodir: true });
+export function fileSubject$(
+  pathPattern: string,
+  config: Config
+): FileDescriptorSubject {
+  var eventStream = new Rx.Subject<FileDescriptor>();
+
+  glob(
+    pathPattern,
+    { ignore: config.exclude, nodir: true },
+    function (err, files) {
+      files.map((sourceFileName) => {
+        const fileContent = fs.readFileSync(sourceFileName).toString();
+        eventStream.next({ name: sourceFileName, content: fileContent });
+      });
+    }
+  );
+
+  return eventStream;
 }
 
 /**
@@ -32,22 +48,28 @@ export function generateTemplateFromGeneratorConfig(
   { input }: { input?: FileDescriptorSubject }
 ) {
   // TODO do something with the input stream
-  if (input) {
-    var observer: Partial<Rx.Observer<FileDescriptor>> = {
-      next: function (next) {
-        console.log(next);
-      },
-      error: function (error) {
-        console.log(error);
-      },
+  // if (input) {
+  //   var observer: Partial<Rx.Observer<FileDescriptor>> = {
+  //     next: function (next) {
+  //       console.log(next);
+  //     },
+  //     error: function (error) {
+  //       console.log(error);
+  //     },
 
-      complete: function () {
-        console.log("done");
-      },
-    };
+  //     complete: function () {
+  //       console.log("done");
+  //     },
+  //   };
 
-    input.subscribe(observer);
-  }
+  //   input.subscribe(observer);
+  // }
+
+  /*
+  const subject$=fileSubject$(pathPattern, config)
+   
+      const value: boolean = await Rx.of(subject$).toPromise();
+  */
 
   const sourceRoot = path.resolve(generator.source);
   const targetRoot = path.resolve(generator.target);
@@ -63,7 +85,10 @@ export function generateTemplateFromGeneratorConfig(
 
       log({ pathPattern });
 
-      fileIterator(pathPattern, config).map(function (sourceFileName) {
+      fileSubject$(pathPattern, config).subscribe(function ({
+        name: sourceFileName,
+        content: fileContent,
+      }) {
         log({ sourceFileName });
 
         const sourceFileAndPathWithoutRoot = sourceFileName.replace(
@@ -88,8 +113,6 @@ export function generateTemplateFromGeneratorConfig(
           sourceFileName,
           templatedTargetFileName,
         });
-
-        const fileContent = fs.readFileSync(sourceFileName).toString();
 
         const templatedData = config.replaceInFile
           ? config.replaceInFile.reduce(
