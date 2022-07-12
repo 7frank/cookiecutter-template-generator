@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import Rx from "rxjs";
+
 export const replaceSchema = z.object({
   src: z.string().min(1),
   trg: z.string().min(1),
@@ -53,3 +55,10 @@ export const cookieGeneratorSchema = z.object({
 export type CookieGenerator = z.infer<typeof cookieGeneratorSchema>;
 
 export type TemplateKey = `cookiecutter.${string}`;
+
+export type FileDescriptor = {
+  name: string;
+  content: string;
+};
+
+export type FileDescriptorSubject = Rx.Subject<FileDescriptor>;

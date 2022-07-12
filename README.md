@@ -49,7 +49,7 @@ check_method_name []: checkServiceInformationInquiryCreationEntitlement
 
 - (1) ☑ <strike>MVP</strike>
 - (2) ☑ <strike>create cli takes a config.ts or json file as input</strike>
-- (3) add option to override generator input (node-fetch & gunzip-maybe & tar-stream & rxjs-stream)
+- (3) add option to override generator input
   - e.g. `esrun ./examples/auth-service.ts | ctg - -i https://github.com/Baeldung/kotlin-tutorials/tarball/master`
 - (4) write tests that also function as bare examples
 - (5) add some asciinema example that showcases a minimal example

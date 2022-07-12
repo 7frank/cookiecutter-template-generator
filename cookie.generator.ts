@@ -3,8 +3,6 @@ import chalk from "chalk";
 import { generateTemplateFromGeneratorConfig } from "./src/generateTemplateFromGeneratorConfig";
 import { log } from "./src/log";
 
-import Rx from "rxjs";
-
 import {
   command,
   binary,
@@ -14,19 +12,18 @@ import {
   optional,
   string,
 } from "cmd-ts";
-import { cookieGeneratorSchema, CookieGenerator } from "./src/types";
+import {
+  cookieGeneratorSchema,
+  CookieGenerator,
+  FileDescriptorSubject,
+} from "./src/types";
 import { JSONType } from "./src/input/JsonType";
 import { TarGzType } from "./src/input/TarGzType";
 import { listPossibleFiles } from "./src/listPossibleFiles";
 
-type FileDecriptor = {
-  name: string;
-  content: string;
-};
-
 interface CLI {
   config: JSON;
-  input?: Rx.Subject<FileDecriptor>;
+  input?: FileDescriptorSubject;
   pattern?: string;
 }
 
@@ -72,26 +69,8 @@ async function handler({ config, input, pattern }: CLI) {
     process.exit(0);
   }
 
-  // TODO do something with the input stream
-  if (input) {
-    var observer = {
-      next: function (next) {
-        console.log(next);
-      },
-      error: function (error) {
-        console.log(error);
-      },
-
-      complete: function () {
-        console.log("done");
-      },
-    };
-
-    input.subscribe(observer);
-  }
-
   log(chalk.green("Let's a go!"));
-  generateTemplateFromGeneratorConfig(generator);
+  generateTemplateFromGeneratorConfig(generator, { input });
 }
 
 const cli = command({

@@ -1,8 +1,16 @@
 import glob from "glob";
 import fs from "fs";
 import path from "path";
+import Rx from "rxjs";
 
-import { Config, CookieGenerator, Replace, TemplateKey } from "./types";
+import {
+  Config,
+  CookieGenerator,
+  FileDescriptor,
+  FileDescriptorSubject,
+  Replace,
+  TemplateKey,
+} from "./types";
 import { extractTemplateKeysAndDefaults, validateKeys } from "./validateKeys";
 import { log } from "./log";
 
@@ -20,8 +28,27 @@ export function fileIterator(pathPattern: string, config: Config) {
  * - create cookiecutter.json with template parameters
  */
 export function generateTemplateFromGeneratorConfig(
-  generator: CookieGenerator
+  generator: CookieGenerator,
+  { input }: { input?: FileDescriptorSubject }
 ) {
+  // TODO do something with the input stream
+  if (input) {
+    var observer: Partial<Rx.Observer<FileDescriptor>> = {
+      next: function (next) {
+        console.log(next);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+
+      complete: function () {
+        console.log("done");
+      },
+    };
+
+    input.subscribe(observer);
+  }
+
   const sourceRoot = path.resolve(generator.source);
   const targetRoot = path.resolve(generator.target);
 
