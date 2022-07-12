@@ -43,7 +43,7 @@ export function fileSubject$(
  * - copy result
  * - create cookiecutter.json with template parameters
  */
-export function generateTemplateFromGeneratorConfig(
+export async function generateTemplateFromGeneratorConfig(
   generator: CookieGenerator,
   { input }: { input?: FileDescriptorSubject }
 ) {
@@ -79,13 +79,17 @@ export function generateTemplateFromGeneratorConfig(
     Record<TemplateKey, Replace>
   > = {};
 
-  Object.entries(generator.configuration).map(([configurationName, config]) => {
-    Object.entries(config.include ?? []).map(([key, p]) => {
+  for await (const [configurationName, config] of Object.entries(
+    generator.configuration
+  )) {
+    for await (const [key, p] of Object.entries(config.include ?? [])) {
       const pathPattern = path.resolve(sourceRoot, p);
 
       log({ pathPattern });
 
-      fileSubject$(pathPattern, config).subscribe(function ({
+      const subject$ = fileSubject$(pathPattern, config);
+
+      subject$.subscribe(function ({
         name: sourceFileName,
         content: fileContent,
       }) {
@@ -134,8 +138,10 @@ export function generateTemplateFromGeneratorConfig(
         });
         fs.writeFileSync(templatedTargetFileName, templatedData, {});
       });
-    });
-  });
+
+      await Rx.firstValueFrom(subject$);
+    }
+  }
 
   const configFileName = path.resolve(targetRoot, "cookiecutter.json");
 
