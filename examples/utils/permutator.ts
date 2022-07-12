@@ -52,6 +52,7 @@ const permOps = permuteOps(separators, separatorFunctions);
  * 'INQUIRY_POSITION_VEHICLE'
  * ]
  * ```
+ * @deprecated since 07/22 we might not rely on all permutations in which case code should be removed in time
  */
 export function createPossibleIdentifiers(words: string[]) {
   const wordPermutations = permutator(words);
