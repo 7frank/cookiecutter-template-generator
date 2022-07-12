@@ -5,6 +5,8 @@ import {
 import { Config, Replace, TemplateKey } from "./types";
 import chalk from "chalk";
 
+export type CookieCuttersType = Record<TemplateKey, Replace>;
+
 export function validateKeys(keys: string[]) {
   function filterbychr(str) {
     var regex = /[a-zA-Z0-9_.]+/g;
@@ -34,7 +36,7 @@ export function validateKeys(keys: string[]) {
 export function extractTemplateKeysAndDefaults(
   config: Config,
   otherPotentialKeys?: Replace[]
-): Record<TemplateKey, Replace> {
+): CookieCuttersType {
   const otherKeys = otherPotentialKeys?.reduce(
     (acc, curr) => ({ ...acc, ...getHandlebarVariables(curr) }),
     {}

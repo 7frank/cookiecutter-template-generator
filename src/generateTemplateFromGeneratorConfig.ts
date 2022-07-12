@@ -11,7 +11,11 @@ import {
   Replace,
   TemplateKey,
 } from "./types";
-import { extractTemplateKeysAndDefaults, validateKeys } from "./validateKeys";
+import {
+  CookieCuttersType,
+  extractTemplateKeysAndDefaults,
+  validateKeys,
+} from "./validateKeys";
 import { log } from "./log";
 
 export function fileSubject$(
@@ -33,6 +37,8 @@ export function fileSubject$(
 
   return eventStream;
 }
+
+type CookieCutterKeysPerConfig = Record<string, CookieCuttersType>;
 
 /**
  * MVP outline - work in progress
@@ -65,85 +71,28 @@ export async function generateTemplateFromGeneratorConfig(
   //   input.subscribe(observer);
   // }
 
-  /*
-  const subject$=fileSubject$(pathPattern, config)
-   
-      const value: boolean = await Rx.of(subject$).toPromise();
-  */
-
-  const sourceRoot = path.resolve(generator.source);
-  const targetRoot = path.resolve(generator.target);
-
-  const cookieCutterKeysPerConfig: Record<
-    string,
-    Record<TemplateKey, Replace>
-  > = {};
+  const cookieCutterKeysPerConfig: CookieCutterKeysPerConfig = {};
 
   for await (const [configurationName, config] of Object.entries(
     generator.configuration
   )) {
     for await (const [key, p] of Object.entries(config.include ?? [])) {
-      const pathPattern = path.resolve(sourceRoot, p);
+      const pathPattern = path.resolve(generator.source, p);
 
       log({ pathPattern });
 
       const subject$ = fileSubject$(pathPattern, config);
 
-      subject$.subscribe(function ({
-        name: sourceFileName,
-        content: fileContent,
-      }) {
-        log({ sourceFileName });
-
-        const sourceFileAndPathWithoutRoot = sourceFileName.replace(
-          sourceRoot,
-          "."
-        );
-
-        const targetFileName = path.resolve(
-          targetRoot,
-          generator.repository,
-          sourceFileAndPathWithoutRoot
-        );
-
-        const templatedTargetFileName = config.replaceInPath
-          ? config.replaceInPath.reduce(
-              (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
-              targetFileName
-            )
-          : targetFileName;
-
-        log("copying files", {
-          sourceFileName,
-          templatedTargetFileName,
-        });
-
-        const templatedData = config.replaceInFile
-          ? config.replaceInFile.reduce(
-              (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
-              fileContent
-            )
-          : fileContent;
-
-        const keysAndValues = extractTemplateKeysAndDefaults(config, [
-          { src: "MyRepository", trg: generator.repository },
-        ]);
-
-        validateKeys(Object.keys(keysAndValues));
-
-        cookieCutterKeysPerConfig[configurationName] = keysAndValues;
-
-        fs.mkdirSync(path.dirname(templatedTargetFileName), {
-          recursive: true,
-        });
-        fs.writeFileSync(templatedTargetFileName, templatedData, {});
+      subject$.subscribe((value) => {
+        const handler = handleSingleConfiguration(config, generator);
+        cookieCutterKeysPerConfig[configurationName] = handler(value);
       });
 
       await Rx.firstValueFrom(subject$);
     }
   }
 
-  const configFileName = path.resolve(targetRoot, "cookiecutter.json");
+  const configFileName = path.resolve(generator.target, "cookiecutter.json");
 
   const cookieCutterVariables = extractCookieCutterJson(
     cookieCutterKeysPerConfig
@@ -160,6 +109,65 @@ export async function generateTemplateFromGeneratorConfig(
     JSON.stringify(cookieCutterVariables, null, "  "),
     {}
   );
+}
+
+function handleSingleConfiguration(
+  config: Config,
+  generator: Pick<CookieGenerator, "source" | "target" | "repository">
+): (value: FileDescriptor) => CookieCuttersType {
+  return function handleSingleFile({
+    name: sourceFileName,
+    content: fileContent,
+  }: FileDescriptor) {
+    const sourceRoot = path.resolve(generator.source);
+    const targetRoot = path.resolve(generator.target);
+
+    log({ sourceFileName });
+
+    const sourceFileAndPathWithoutRoot = sourceFileName.replace(
+      sourceRoot,
+      "."
+    );
+
+    const targetFileName = path.resolve(
+      targetRoot,
+      generator.repository,
+      sourceFileAndPathWithoutRoot
+    );
+
+    const templatedTargetFileName = config.replaceInPath
+      ? config.replaceInPath.reduce(
+          (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+          targetFileName
+        )
+      : targetFileName;
+
+    log("copying files", {
+      sourceFileName,
+      templatedTargetFileName,
+    });
+
+    const templatedData = config.replaceInFile
+      ? config.replaceInFile.reduce(
+          (acc, curr) => acc.replace(new RegExp(curr.src, "g"), curr.trg),
+          fileContent
+        )
+      : fileContent;
+
+    const keysAndValues: CookieCuttersType = extractTemplateKeysAndDefaults(
+      config,
+      [{ src: "MyRepository", trg: generator.repository }]
+    );
+
+    validateKeys(Object.keys(keysAndValues));
+
+    fs.mkdirSync(path.dirname(templatedTargetFileName), {
+      recursive: true,
+    });
+    fs.writeFileSync(templatedTargetFileName, templatedData, {});
+
+    return keysAndValues;
+  };
 }
 
 /**
