@@ -22,7 +22,7 @@ const generator: CookieGenerator = {
   configuration: {
     main: {
       include: ["**/ui-api-rest-core-component-vehiclepositioninquiry/**"],
-      exclude: [".git", "**/build/libs/**"],
+      exclude: [".git", "**/build/**"],
 
       replaceInPath: [...replace, ...replace2],
       replaceInFile: [...replace, ...replace2],
